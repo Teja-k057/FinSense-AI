@@ -1,0 +1,56 @@
+# Environments and Secrets
+.env
+.env.local
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Local databases and runtime data caches
+*.db
+*.sqlite3
+data/risk_engine.db
+data/gdelt_cache/*
+!data/gdelt_cache/.gitkeep
+data/kaggle/*
+!data/kaggle/.gitkeep
+data/market_cache/*
+!data/market_cache/.gitkeep
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
