@@ -10,6 +10,86 @@
 
 ---
 
+## Submission Details — S&P Global & CRISIL Campus Hackathon 2026
+
+**Candidate Name:** Karaka Tejaswanth  
+**College Email ID:** karaka.tejaswanth2023@vitstudent.ac.in  
+**College / Campus:** Vellore Institute of Technology (VIT), Vellore  
+**Module:** Module A — AI/NLP Risk Engine & Tactical Stock Index Rebalancer  
+**Demo Video (YouTube Unlisted):** https://www.youtube.com/watch?v=CCwh2Zyxdgw  
+**Presentation Deck:** [docs/presentation.pdf](docs/presentation.pdf)  
+**Source Repository:** https://github.com/Teja-k057/FinSense-AI
+
+> The demo video is hosted as an unlisted YouTube video. Please test the link in a private/incognito window before submitting.
+
+---
+
+## 1. Project Overview / Problem Statement & Approach
+
+FinSense AI explores how financial news can be converted into transparent stock-index allocation proposals. It ingests news headlines from GDELT and a public Financial News PhraseBank mirror, classifies event categories, scores sentiment and impact, and combines the resulting signals with market-momentum data.
+
+The tactical rebalancer applies bounded allocation constraints across a 15-stock mock universe: each constituent has a 2% minimum and 15% maximum weight, with portfolio weights normalized to 100%. A dashboard exposes the news, risk signals, target weights, and stock-level explanations. A historical simulator compares the tactical strategy with an equal-weight baseline using an assumed 10 bps transaction-cost model. This is an academic prototype—not investment advice or an official S&P Global/CRISIL methodology.
+
+## 2. Architecture & Tech Stack
+
+![FinSense AI system architecture](docs/architecture.png)
+
+**Flow:** Public financial news / market data → ingestion and deduplication → sentiment, event, and impact analysis → signal fusion → constrained allocation → explanatory dashboard and historical comparison.
+
+**Technology:** Python, FastAPI, SQLAlchemy, SQLite by default (PostgreSQL configuration supported), React, TypeScript, Vite, yfinance, and Python data-science libraries. The default sentiment engine is an explainable financial lexicon. Optional local FinBERT inference can be enabled with the relevant Transformers/PyTorch dependencies and configuration.
+
+## 3. Dataset Used
+
+- **GDELT 2.0 DOC API:** public news results retrieved at run time; availability and historical coverage depend on the upstream service.
+- **Financial News PhraseBank:** a public financial-news sentiment corpus accessed through the URL configured in the application.
+- **Local demonstration sample:** the application can generate a small CSV of example headlines for ingestion when no local sample file exists. These are demonstration examples and should not be represented as live news.
+- **Market data:** price history and quotes requested through yfinance, subject to upstream availability and caching.
+
+No confidential S&P Global or CRISIL client data is used. The index is a 15-stock mock universe. News labels, impact scores, market data availability, and historical backtest results depend on the configured data and run time.
+
+## 4. Quickstart & Installation
+
+**Runtime:** Python 3.10+ and Node.js 18+ with npm. Tested run commands are documented below; run them from the repository root.
+
+```bash
+git clone https://github.com/Teja-k057/FinSense-AI.git
+cd FinSense-AI
+pip install -r requirements.txt
+cd frontend
+npm install
+cd ..
+```
+
+On Windows, start both services using:
+
+```powershell
+.\scripts\run_dev.bat
+```
+
+Alternatively, start the backend and frontend in separate terminals:
+
+```bash
+python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+```bash
+cd frontend
+npm run dev
+```
+
+Dashboard: http://localhost:5173  
+Backend API docs: http://localhost:8000/docs
+
+For optional database configuration, copy `.env.example` to `.env` and review the settings. Do not commit secrets or a populated local database.
+
+## 5. Key Results & Domain Impact
+
+The prototype demonstrates the full path from unstructured news to bounded portfolio-weight proposals, including sentiment, event labels, impact scores, reasons for weight changes, and historical comparison against an equal-weight mock index. The allocation rules target a 2% floor, 15% cap, and 100% total portfolio weight; the backtest uses a stated 10 bps transaction-cost assumption.
+
+Performance metrics are run-dependent and should be quoted together with the selected date range and rebalancing frequency shown in the dashboard. Results are simulated, may change when market data or signals change, and do not demonstrate realized investment performance.
+
+---
+
 ## 📌 Executive Summary
 
 **FinSense AI** is an institutional-grade financial intelligence and index rebalancing platform built for the **S&P Global × CRISIL Phase III Case Study Competition**.
