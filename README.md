@@ -7,7 +7,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Candidate Name:** Karaka Tejaswanth  
-**College Email ID:** karaka.tejaswanth2023@vitstudent.ac.in  
+**College Email ID:** karaka.tejaswanth2023@vitstudent.ac.in
+**Personal Email ID:** tejaswanth057@gmail.com 
 **College / Campus:** Vellore Institute of Technology (VIT), Vellore  
 **Module:** Module A — AI/NLP Risk Engine & Tactical Stock Index Rebalancer  
 **Demo Video (YouTube Unlisted):** https://www.youtube.com/watch?v=CCwh2Zyxdgw  
