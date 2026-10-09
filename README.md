@@ -49,45 +49,69 @@ No confidential or proprietary S&P Global or CRISIL client data is used. Runtime
 
 ## 4. Quickstart & Installation
 
-**Prerequisites:** Python 3.10 or later, Node.js 18 or later, npm and Git. The instructions below are for a local development run.
+**Prerequisites:** Python 3.10 or later, Node.js 18 or later, npm, and Git. Tested on Windows (PowerShell & CMD), Linux, and macOS.
 
-Clone the public repository and install backend and frontend dependencies from the repository root:
+### Step 1: Clone Repository & Install Dependencies
+From your terminal, clone the repository and install all dependencies:
 
 ```bash
 git clone https://github.com/Teja-k057/FinSense-AI.git
 cd FinSense-AI
+
+# Install Python backend dependencies
 pip install -r requirements.txt
+
+# Install frontend dependencies
 cd frontend
 npm install
 cd ..
 ```
 
-On Windows, start both development servers with the launcher:
+---
 
-```powershell
-.\scripts\run_dev.bat
-```
+### Option 1: 1-Click Launch (Easiest for Windows)
 
-Alternatively, use two terminals.
+From the project root directory, launch both the FastAPI backend and React frontend automatically:
 
-**Terminal 1 — backend API:**
+- **Using File Explorer:** Double-click `run.bat` (or `scripts\run_dev.bat`).
+- **Or using PowerShell:**
+  ```powershell
+  .\run.ps1
+  ```
+  *(or `.\scripts\run_dev.ps1`)*
 
+This automatically launches two dedicated terminal windows:
+1. **Backend API Server** running on `http://localhost:8000`
+2. **Frontend UI Console** running on `http://localhost:5173`
+
+---
+
+### Option 2: Step-by-Step Manual Launch
+
+If you prefer running the servers manually in separate terminal windows:
+
+**Terminal 1 — Start the Backend API (FastAPI):**
 ```bash
 python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+*(The backend automatically checks and initializes all 8 database tables upon startup).*
 
-**Terminal 2 — frontend:**
-
+**Terminal 2 — Start the Frontend Dashboard (React + Vite):**
 ```bash
 cd frontend
 npm run dev
 ```
 
-- **Dashboard:** http://localhost:5173
-- **Backend API docs:** http://localhost:8000/docs
-- **Health endpoint:** http://localhost:8000/api/v1/health
+---
 
-SQLite is the default database. To customize local settings, copy `.env.example` to `.env` and change only the options you need. Never commit real credentials, a populated local database or personal access tokens.
+### Accessing the Platform
+
+Once the servers are running, access the services in your browser:
+- 📊 **FinSense AI Dashboard (Web UI):** [http://localhost:5173](http://localhost:5173)
+- 📖 **Backend API Swagger Documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- 🩺 **Health Check Endpoint:** [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
+
+SQLite is the default database (`data/risk_engine.db`). To customize local settings, copy `.env.example` to `.env` and change only the options you need. Never commit real credentials, a populated local database or personal access tokens.
 
 **Run backend tests:**
 
