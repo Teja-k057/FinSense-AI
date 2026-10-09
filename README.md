@@ -43,7 +43,7 @@ This is an academic hackathon prototype. It is not an official S&P Global or CRI
 - **Financial News PhraseBank:** the public corpus is downloaded through the source URL configured in `backend/app/config/settings.py` and cached locally after validation.
 - **Synthetic sample:** `data/sample_financial_news.csv` contains clearly labelled synthetic example headlines so reviewers can inspect the expected input shape. They are not real news articles.
 - **Market prices/history:** fetched through yfinance and subject to upstream availability and caching.
-- **Fallback limitation:** if a live GDELT request fails and no cache is available, the current ingestion implementation may use a small built-in seed set. Treat those records as demonstration fallback examples, not as verified live headlines.
+- **GDELT failure behavior:** the adapter used by the current API route returns an error and an empty record set after a failed live request; it does not label fabricated records as live. A legacy ingestion module also exists in the repository and contains seed examples, so use the documented API route for the live-ingestion demo.
 
 No confidential or proprietary S&P Global or CRISIL client data is used. Runtime cache files and the local database are not committed. The 15-stock index is a mock universe.
 
