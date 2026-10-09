@@ -31,46 +31,67 @@ The platform implements **MODULE A: Tactical High-Frequency Stock Index Rebalanc
 ## 🚀 Quickstart Guide (How to Run)
 
 ### 📋 Prerequisites
-- **Python**: Version `3.10` or higher (`3.11`, `3.12`, or `3.13`)
+- **Python**: Version `3.10` or higher (`3.11`, `3.12`, `3.13`, or `3.14`)
 - **Node.js**: Version `18.0` or higher & `npm`
 - **Git**
 
 ---
 
-### Step 1: Clone the Repository
-```bash
-git clone <repository-url>
-cd Teja
-```
+### Option A: 1-Click Launch (Recommended for Windows)
+
+From the project root directory, run either launcher script:
+
+- **Command Prompt / File Explorer**: Double-click or run `scripts\run_dev.bat` (or `run.bat` in the workspace root).
+- **PowerShell**:
+  ```powershell
+  .\scripts\run_dev.ps1
+  ```
+
+This automatically opens two dedicated windows:
+1. **FastAPI Backend Server** running on `http://localhost:8000`
+2. **React + Vite Frontend Dev Server** running on `http://localhost:5173`
 
 ---
 
-### Step 2: Configure Environment Variables
-Copy the template configuration into your local `.env`:
+### Option B: Step-by-Step Manual Launch
+
+#### Step 1: Open the Project Directory
+Ensure your terminal is in the project folder:
 ```bash
+cd FinSense-AI
+```
+
+#### Step 2: Install Dependencies (If not already installed)
+```bash
+# Python backend packages
+pip install -r requirements.txt
+
+# Frontend packages
+cd frontend
+npm install
+cd ..
+```
+
+#### Step 3: Configure Environment Variables
+Ensure a local `.env` file exists (a default `.env` is already configured for SQLite):
+```bash
+# On Linux / macOS:
 cp .env.example .env
+
+# On Windows PowerShell:
+Copy-Item .env.example .env
 ```
-*(On Windows PowerShell: `Copy-Item .env.example .env`)*
+*The system runs out-of-the-box with **SQLite** (`data/risk_engine.db`). If PostgreSQL is desired, update `DATABASE_URL` in `.env`.*
 
-The system runs out-of-the-box with **SQLite** (`data/risk_engine.db`). If you have **PostgreSQL** available, set:
-```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/risk_engine
-POSTGRES_FALLBACK_SQLITE=True
-```
-
----
-
-### Step 3: Run Database Migrations
-Initialize the database tables and seed the 15-stock mock universe:
+#### Step 4: Initialize the Database
+Ensure database schemas and mock universe companies are initialized:
 ```bash
 python -m backend.app.database.migrations
 ```
-*Creates the 8 required tables (`news_documents`, `risk_signals`, `companies`, `index_constituents`, `market_data_records`, `rebalance_runs`, `rebalance_decisions`, `data_source_logs`) with B-tree indexes.*
+*Verifies all 8 database tables (`news_documents`, `risk_signals`, `companies`, `index_constituents`, `market_data_records`, `rebalance_runs`, `rebalance_decisions`, `data_source_logs`) and creates required performance indexes.*
 
----
-
-### Step 4: Start the Backend API (FastAPI)
-In your terminal, run:
+#### Step 5: Start the Backend API (FastAPI)
+In Terminal 1:
 ```bash
 python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -78,13 +99,10 @@ python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 - **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **Health Check**: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
 
----
-
-### Step 5: Start the Frontend UI (React + Vite)
-Open a new terminal, navigate to the `frontend` folder, and launch the dev server:
+#### Step 6: Start the Frontend UI (React + Vite)
+In Terminal 2:
 ```bash
 cd frontend
-npm install
 npm run dev
 ```
 - **FinSense AI Dashboard**: **[http://localhost:5173](http://localhost:5173)**
@@ -141,7 +159,7 @@ The React dashboard is organized into 7 primary sections matching the competitio
 ## 🏛 System Architecture & Project Structure
 
 ```
-Teja/
+FinSense-AI/
 ├── backend/
 │   ├── alembic/                       # Alembic database migrations
 │   │   ├── versions/                  # Schema migration files

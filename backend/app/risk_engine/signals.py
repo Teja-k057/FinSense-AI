@@ -216,15 +216,21 @@ class RiskSignalEngine:
         """Persists risk signal record into relational DB."""
         try:
             db_signal = DBRiskSignal(
+                document_id=signal.document_id,
                 article_id=signal.document_id,
+                company=signal.company,
                 ticker=signal.company,
-                company_name=signal.company_name,
+                company_name=signal.company_name or signal.company,
+                sector=getattr(signal, "sector", None) or "General",
                 sentiment_score=signal.sentiment_score,
                 sentiment_label=signal.sentiment_label or "Neutral",
                 event_type=signal.event_type,
                 event_confidence=signal.confidence,
                 impact_score=signal.impact_score,
-                summary=signal.explanation[:500]
+                risk_level=getattr(signal, "risk_level", "MEDIUM"),
+                explanation=signal.explanation[:500] if signal.explanation else None,
+                summary=signal.explanation[:500] if signal.explanation else None,
+                source=getattr(signal, "source", "GDELT") or "GDELT"
             )
             db.add(db_signal)
             db.commit()

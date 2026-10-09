@@ -145,6 +145,65 @@ def run_migrations():
 
             db.commit()
             logger.info(f"[Migrations] Successfully seeded {len(universe)} companies and index constituents.")
+
+        # Seed initial baseline risk signals if risk_signals table is empty
+        existing_signals = db.query(models.RiskSignal).count()
+        if existing_signals == 0:
+            logger.info("[Migrations] Seeding initial baseline risk signals across mock index universe...")
+            import json
+            from datetime import datetime, timezone, timedelta
+            from backend.app.risk_engine.signals import RiskSignalEngine
+            from backend.app.ingestion.models import NewsDocument as IngestNewsDocument
+
+            engine_instance = RiskSignalEngine()
+            seed_data = [
+                ("NVDA", "Nvidia unveils next-generation Blackwell Ultra AI chips with record-breaking inference speeds", "Product Launch", "Positive", "TechWire"),
+                ("NVDA", "Nvidia faces new export control restrictions on advanced AI hardware shipments", "Regulatory", "Negative", "Bloomberg"),
+                ("AAPL", "Apple reports record Services revenue and announces expanded AI features for iPhone", "Earnings", "Positive", "WSJ"),
+                ("MSFT", "Microsoft Azure secures multi-billion enterprise cloud contract with sovereign wealth fund", "Merger/Acquisition", "Positive", "Reuters"),
+                ("JPM", "JPMorgan Chase raises net interest income guidance following solid loan demand", "Earnings", "Positive", "FT"),
+                ("BAC", "Bank of America increases credit loss provisions amidst macroeconomic uncertainty", "Credit Event", "Negative", "Reuters"),
+                ("GS", "Goldman Sachs global investment banking fees rebound sharply in latest quarter", "Earnings", "Positive", "WSJ"),
+                ("XOM", "ExxonMobil expands deepwater discovery reserves off Guyana coast", "Other", "Positive", "EnergyNews"),
+                ("CVX", "Chevron announces planned maintenance turnaround at major LNG export facility", "Supply Chain", "Negative", "Reuters"),
+                ("TSLA", "Tesla delivers record vehicle volume in Asia as new factory line comes online", "Product Launch", "Positive", "AutoDaily"),
+                ("BA", "FAA approves return to high-rate production for Boeing 737 MAX after safety audit", "Regulatory", "Positive", "AviationWeek"),
+                ("UNH", "UnitedHealth reports rising medical loss ratio as healthcare utilization spikes", "Macroeconomic", "Negative", "HealthcareDaily"),
+                ("JNJ", "Johnson & Johnson settles legacy talc litigation with comprehensive resolution plan", "Regulatory", "Positive", "LegalBrief"),
+                ("PFE", "Pfizer advances novel weight-loss oral drug into Phase 3 international clinical trials", "Product Launch", "Positive", "BioWorld"),
+                ("GOOGL", "Alphabet integrates Gemini models across Google Workspace enterprise ecosystem", "Product Launch", "Positive", "TechCrunch"),
+                ("AMZN", "Amazon Web Services signs landmark nuclear power deal to fuel AI data centers", "Other", "Positive", "CNBC")
+            ]
+            now_dt = datetime.now(timezone.utc)
+            for idx, (t_ticker, t_text, t_evt, t_sent, t_src) in enumerate(seed_data):
+                doc_uid = f"seed_{t_ticker.lower()}_{idx}"
+                if not db.query(models.NewsDocument).filter(models.NewsDocument.id == doc_uid).first():
+                    doc_rec = models.NewsDocument(
+                        id=doc_uid,
+                        source=t_src,
+                        title=t_text,
+                        text=t_text,
+                        url="https://news.example.com",
+                        publication_time=now_dt - timedelta(hours=idx * 2),
+                        retrieved_time=now_dt,
+                        company_entities=json.dumps([t_ticker]),
+                        domain="financial-press",
+                        language="English"
+                    )
+                    db.add(doc_rec)
+                    db.commit()
+                p_doc = IngestNewsDocument(
+                    id=doc_uid,
+                    title=t_text,
+                    raw_text=t_text,
+                    url="https://news.example.com",
+                    source=t_src,
+                    published_at=now_dt - timedelta(hours=idx * 2),
+                    retrieved_at=now_dt,
+                    company_entities=[t_ticker]
+                )
+                engine_instance.process_document(p_doc, db=db, check_duplicate=True)
+            logger.info(f"[Migrations] Successfully seeded {len(seed_data)} initial risk signals.")
     except Exception as e:
         db.rollback()
         logger.error(f"[Migrations] Error seeding companies: {e}")
